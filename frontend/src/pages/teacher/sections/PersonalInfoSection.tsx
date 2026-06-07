@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, DatePicker, Form, Input, InputNumber, message } from 'antd';
+import { Button, DatePicker, Form, Input, InputNumber, message, Descriptions } from 'antd';
 import dayjs, { type Dayjs } from 'dayjs';
+import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
@@ -24,6 +25,7 @@ interface PersonalInfoSectionProps {
 
 export default function PersonalInfoSection({ profile, onUpdated }: PersonalInfoSectionProps) {
   const { t } = useTranslation();
+  const [isEditing, setIsEditing] = useState(false);
 
   const profileSchema = z.object({
     first_name: z.string().min(1, t('errors.required')),
@@ -38,6 +40,7 @@ export default function PersonalInfoSection({ profile, onUpdated }: PersonalInfo
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
@@ -63,10 +66,32 @@ export default function PersonalInfoSection({ profile, onUpdated }: PersonalInfo
       });
       onUpdated(updated);
       message.success(t('profile.saved'));
+      setIsEditing(false);
     } catch {
       message.error(t('profile.saveError'));
     }
   };
+
+  if (!isEditing) {
+    return (
+      <div>
+        <Descriptions column={1} bordered>
+          <Descriptions.Item label={t('profile.lastName')}>{profile.last_name}</Descriptions.Item>
+          <Descriptions.Item label={t('profile.firstName')}>{profile.first_name}</Descriptions.Item>
+          <Descriptions.Item label={t('profile.middleName')}>{profile.middle_name || '—'}</Descriptions.Item>
+          <Descriptions.Item label={t('profile.birthDate')}>{profile.birth_date || '—'}</Descriptions.Item>
+          <Descriptions.Item label={t('profile.experience')}>{profile.experience_years}</Descriptions.Item>
+          <Descriptions.Item label={t('profile.phone')}>{profile.phone || '—'}</Descriptions.Item>
+          <Descriptions.Item label={t('profile.email')}>{profile.email || '—'}</Descriptions.Item>
+        </Descriptions>
+        <div style={{ marginTop: 16 }}>
+          <Button type="primary" onClick={() => setIsEditing(true)}>
+            Редактировать
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <Form layout="vertical" className="form-grid" onFinish={() => void handleSubmit(onSubmit)()}>
@@ -142,9 +167,17 @@ export default function PersonalInfoSection({ profile, onUpdated }: PersonalInfo
         />
       </Form.Item>
 
-      <Button type="primary" htmlType="submit" loading={isSubmitting} data-testid="profile-save">
-        {t('profile.save')}
-      </Button>
+      <div style={{ gridColumn: '1 / -1', display: 'flex', gap: '8px', marginTop: '16px' }}>
+        <Button type="primary" htmlType="submit" loading={isSubmitting} data-testid="profile-save">
+          {t('profile.save')}
+        </Button>
+        <Button onClick={() => {
+          setIsEditing(false);
+          reset();
+        }}>
+          Отмена
+        </Button>
+      </div>
     </Form>
   );
 }

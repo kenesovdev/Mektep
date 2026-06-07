@@ -2,8 +2,8 @@ import api from './axios';
 import type { Achievement } from '@/types/achievement';
 
 export async function fetchAchievements(apiPath: string): Promise<Achievement[]> {
-  const { data } = await api.get<Achievement[]>(apiPath);
-  return data;
+  const { data } = await api.get<any>(apiPath);
+  return Array.isArray(data) ? data : data.results;
 }
 
 export async function createAchievement(apiPath: string, formData: FormData): Promise<Achievement> {
