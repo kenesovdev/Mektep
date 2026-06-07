@@ -9,8 +9,11 @@ import CertificatesSection from './sections/CertificatesSection';
 import DiplomasSection from './sections/DiplomasSection';
 import PersonalInfoSection from './sections/PersonalInfoSection';
 import QualificationsSection from './sections/QualificationsSection';
+import PasswordSection from './sections/PasswordSection';
+import { useTranslation } from 'react-i18next';
 
 export default function TeacherProfilePage() {
+  const { t } = useTranslation();
   const [profile, setProfile] = useState<TeacherProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -79,6 +82,11 @@ export default function TeacherProfilePage() {
                   />
                 </div>
               ),
+            },
+            {
+              key: 'password',
+              label: t('password.tab', 'Изменить пароль'),
+              children: <PasswordSection />,
             },
           ]}
         />

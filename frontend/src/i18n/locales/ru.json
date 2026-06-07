@@ -50,7 +50,17 @@
     "invalidEmail": "Некорректный email",
     "minPassword": "Минимум 8 символов",
     "fileSize": "Файл не должен превышать 10 МБ",
-    "fileType": "Допустимые форматы: PDF, JPG, PNG"
+    "fileType": "Допустимые форматы: PDF, JPG, PNG",
+    "passwordMatch": "Пароли не совпадают"
+  },
+  "password": {
+    "tab": "Изменить пароль",
+    "oldPassword": "Текущий пароль",
+    "newPassword": "Новый пароль",
+    "confirmPassword": "Подтвердите новый пароль",
+    "change": "Изменить пароль",
+    "success": "Пароль успешно изменён",
+    "error": "Ошибка при изменении пароля"
   },
   "common": {
     "loading": "Загрузка...",
