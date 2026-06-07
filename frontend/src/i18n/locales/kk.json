@@ -8,6 +8,7 @@
   },
   "profile": {
     "title": "Мұғалімнің профилі",
+    "personalData": "Жеке ақпараттар",
     "firstName": "Аты",
     "lastName": "Тегі",
     "middleName": "Әкесінің аты",
@@ -20,9 +21,9 @@
     "saveError": "Деректерді сақтау мүмкін болмады"
   },
   "documents": {
-    "diplomas": "Дипломдар",
-    "certificates": "Сертификаттар",
-    "qualifications": "Біліктілік санаты",
+    "diplomas": "Диплом",
+    "certificates": "Сертификат",
+    "qualifications": "Біліктілік санат",
     "addDiploma": "Диплом қосу",
     "addCertificate": "Сертификат қосу",
     "upload": "Файл жүктеу",

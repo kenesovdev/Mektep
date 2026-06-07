@@ -8,6 +8,7 @@
   },
   "profile": {
     "title": "Профиль учителя",
+    "personalData": "Личные данные",
     "firstName": "Имя",
     "lastName": "Фамилия",
     "middleName": "Отчество",
@@ -22,7 +23,7 @@
   "documents": {
     "diplomas": "Дипломы",
     "certificates": "Сертификаты",
-    "qualifications": "Біліктілік санаты",
+    "qualifications": "Квалификация",
     "addDiploma": "Добавить диплом",
     "addCertificate": "Добавить сертификат",
     "upload": "Загрузить файл",

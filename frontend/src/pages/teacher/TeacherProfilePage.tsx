@@ -49,22 +49,22 @@ export default function TeacherProfilePage() {
           items={[
             {
               key: 'personal',
-              label: 'Личные данные',
+              label: t('profile.personalData', 'Личные данные'),
               children: <PersonalInfoSection profile={profile} onUpdated={setProfile} />,
             },
             {
               key: 'diplomas',
-              label: 'Дипломы',
+              label: t('documents.diplomas', 'Дипломы'),
               children: <DiplomasSection profile={profile} onUpdated={setProfile} />,
             },
             {
               key: 'certificates',
-              label: 'Сертификаты',
+              label: t('documents.certificates', 'Сертификаты'),
               children: <CertificatesSection profile={profile} onUpdated={setProfile} />,
             },
             {
               key: 'qualifications',
-              label: 'Квалификация',
+              label: t('documents.qualifications', 'Квалификация'),
               children: <QualificationsSection profile={profile} onUpdated={setProfile} />,
             },
             {
