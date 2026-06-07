@@ -1,0 +1,60 @@
+{
+  "nav": {
+    "profile": "Профиль",
+    "logout": "Шығу",
+    "dashboard": "Басқару тақтасы",
+    "users": "Пайдаланушылар",
+    "schools": "Мектептер"
+  },
+  "profile": {
+    "title": "Мұғалімнің профилі",
+    "firstName": "Аты",
+    "lastName": "Тегі",
+    "middleName": "Әкесінің аты",
+    "birthDate": "Туған күні",
+    "experience": "Еңбек өтілі (жыл)",
+    "phone": "Телефон",
+    "email": "Email",
+    "save": "Сақтау",
+    "saved": "Жеке деректер сақталды",
+    "saveError": "Деректерді сақтау мүмкін болмады"
+  },
+  "documents": {
+    "diplomas": "Дипломдар",
+    "certificates": "Сертификаттар",
+    "qualifications": "Біліктілік санаты",
+    "addDiploma": "Диплом қосу",
+    "addCertificate": "Сертификат қосу",
+    "upload": "Файл жүктеу",
+    "download": "Жүктеп алу",
+    "delete": "Жою"
+  },
+  "achievements": {
+    "teacher": "Мұғалім жетістігі",
+    "student": "Оқушы жетістігі",
+    "add": "Қосу",
+    "year": "Жыл",
+    "month": "Ай",
+    "title": "Атауы"
+  },
+  "auth": {
+    "login": "Кіру",
+    "email": "Email",
+    "password": "Құпия сөз",
+    "title": "Мұғалімдер портфолиосы",
+    "subtitle": "Жүйеге кіріңіз",
+    "invalidCredentials": "Email немесе құпия сөз қате"
+  },
+  "errors": {
+    "required": "Міндетті өріс",
+    "invalidEmail": "Қате email",
+    "minPassword": "Кемінде 8 таңба",
+    "fileSize": "Файл 10 МБ-тан аспауы керек",
+    "fileType": "Рұқсат етілген форматтар: PDF, JPG, PNG"
+  },
+  "common": {
+    "loading": "Жүктелуде...",
+    "view": "Қарау",
+    "back": "Артқа"
+  }
+}

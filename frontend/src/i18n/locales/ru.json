@@ -1,0 +1,60 @@
+{
+  "nav": {
+    "profile": "Профиль",
+    "logout": "Выйти",
+    "dashboard": "Панель",
+    "users": "Пользователи",
+    "schools": "Школы"
+  },
+  "profile": {
+    "title": "Профиль учителя",
+    "firstName": "Имя",
+    "lastName": "Фамилия",
+    "middleName": "Отчество",
+    "birthDate": "Дата рождения",
+    "experience": "Стаж (лет)",
+    "phone": "Телефон",
+    "email": "Email",
+    "save": "Сохранить",
+    "saved": "Личные данные сохранены",
+    "saveError": "Не удалось сохранить данные"
+  },
+  "documents": {
+    "diplomas": "Дипломы",
+    "certificates": "Сертификаты",
+    "qualifications": "Біліктілік санаты",
+    "addDiploma": "Добавить диплом",
+    "addCertificate": "Добавить сертификат",
+    "upload": "Загрузить файл",
+    "download": "Скачать",
+    "delete": "Удалить"
+  },
+  "achievements": {
+    "teacher": "Мұғалім жетістігі",
+    "student": "Оқушы жетістігі",
+    "add": "Добавить",
+    "year": "Год",
+    "month": "Месяц",
+    "title": "Название"
+  },
+  "auth": {
+    "login": "Войти",
+    "email": "Email",
+    "password": "Пароль",
+    "title": "Портфолио учителей",
+    "subtitle": "Войдите в систему",
+    "invalidCredentials": "Неверный email или пароль"
+  },
+  "errors": {
+    "required": "Обязательно",
+    "invalidEmail": "Некорректный email",
+    "minPassword": "Минимум 8 символов",
+    "fileSize": "Файл не должен превышать 10 МБ",
+    "fileType": "Допустимые форматы: PDF, JPG, PNG"
+  },
+  "common": {
+    "loading": "Загрузка...",
+    "view": "Просмотр",
+    "back": "Назад"
+  }
+}
