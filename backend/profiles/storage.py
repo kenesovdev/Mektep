@@ -22,6 +22,7 @@ class PublicRawStorage(RawMediaCloudinaryStorage):
             resource_type='raw',
             access_mode='public',
             type='upload',
+            access_control=[{"access_type": "anonymous"}],
         )
         return response['public_id']
 
@@ -44,5 +45,6 @@ class PublicMediaStorage(MediaCloudinaryStorage):
             resource_type='image',
             access_mode='public',
             type='upload',
+            access_control=[{"access_type": "anonymous"}],
         )
         return response['public_id']
