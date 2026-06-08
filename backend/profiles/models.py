@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from cloudinary_storage.storage import RawMediaCloudinaryStorage
 
 
 class TeacherProfile(models.Model):
@@ -47,7 +48,7 @@ class Diploma(models.Model):
         validators=[MinValueValidator(1), MaxValueValidator(12)],
     )
     institution = models.CharField(max_length=255)
-    file = models.FileField(upload_to='diplomas/')
+    file = models.FileField(upload_to='diplomas/', storage=RawMediaCloudinaryStorage())
 
     class Meta:
         verbose_name = 'Диплом'
@@ -67,7 +68,7 @@ class Certificate(models.Model):
     title = models.CharField(max_length=255)
     start_date = models.DateField()
     end_date = models.DateField()
-    file = models.FileField(upload_to='certificates/')
+    file = models.FileField(upload_to='certificates/', storage=RawMediaCloudinaryStorage())
 
     class Meta:
         verbose_name = 'Сертификат'
@@ -107,7 +108,7 @@ class TeacherAchievement(models.Model):
         validators=[MinValueValidator(1), MaxValueValidator(12)],
     )
     title = models.CharField(max_length=255)
-    file = models.FileField(upload_to='teacher_achievements/', blank=True)
+    file = models.FileField(upload_to='teacher_achievements/', blank=True, storage=RawMediaCloudinaryStorage())
 
     class Meta:
         verbose_name = 'Достижение учителя'
@@ -129,7 +130,7 @@ class StudentAchievement(models.Model):
         validators=[MinValueValidator(1), MaxValueValidator(12)],
     )
     title = models.CharField(max_length=255)
-    file = models.FileField(upload_to='student_achievements/', blank=True)
+    file = models.FileField(upload_to='student_achievements/', blank=True, storage=RawMediaCloudinaryStorage())
 
     class Meta:
         verbose_name = 'Достижение ученика'
