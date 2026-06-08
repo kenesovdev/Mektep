@@ -1,3 +1,4 @@
+import os
 import cloudinary.uploader
 from cloudinary_storage.storage import RawMediaCloudinaryStorage, MediaCloudinaryStorage
 
@@ -10,10 +11,14 @@ class PublicRawStorage(RawMediaCloudinaryStorage):
         else:
             target_name = name
 
+        folder = os.path.dirname(target_name)
+        public_id = os.path.basename(target_name)
+
         content.seek(0)
         response = cloudinary.uploader.upload(
             content,
-            public_id=target_name,
+            public_id=public_id,
+            folder=folder,
             resource_type='raw',
             access_mode='public',
             type='upload',
@@ -28,10 +33,14 @@ class PublicMediaStorage(MediaCloudinaryStorage):
         else:
             target_name = name
 
+        folder = os.path.dirname(target_name)
+        public_id = os.path.basename(target_name)
+
         content.seek(0)
         response = cloudinary.uploader.upload(
             content,
-            public_id=target_name,
+            public_id=public_id,
+            folder=folder,
             resource_type='image',
             access_mode='public',
             type='upload',

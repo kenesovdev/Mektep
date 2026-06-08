@@ -1,4 +1,5 @@
 import os
+import cloudinary.utils
 
 from rest_framework import serializers
 
@@ -38,8 +39,16 @@ def validate_uploaded_file(file):
     return file
 
 
+class DiplomaFileField(serializers.FileField):
+    def to_representation(self, value):
+        if not value:
+            return None
+        public_id = value.name.removeprefix('media/')
+        url = cloudinary.utils.cloudinary_url(public_id, resource_type='raw')[0]
+        return url
+
 class DiplomaSerializer(serializers.ModelSerializer):
-    file = AbsoluteFileField()
+    file = DiplomaFileField()
 
     class Meta:
         model = Diploma

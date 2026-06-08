@@ -2,6 +2,8 @@ import io
 import os
 import zipfile
 
+import cloudinary.utils
+
 from django.http import FileResponse, HttpResponseRedirect, StreamingHttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, generics, status
@@ -94,6 +96,11 @@ class TeacherFileDownloadView(APIView):
         obj = get_object_or_404(model, pk=file_id, profile=profile)
         if not obj.file:
             return Response({'error': 'No file attached'}, status=status.HTTP_404_NOT_FOUND)
+
+        if file_type == 'diploma':
+            public_id = obj.file.name.removeprefix('media/')
+            url = cloudinary.utils.cloudinary_url(public_id, resource_type='raw')[0]
+            return HttpResponseRedirect(url)
 
         return HttpResponseRedirect(obj.file.url)
 
