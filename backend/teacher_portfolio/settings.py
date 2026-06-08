@@ -1,4 +1,5 @@
 from datetime import timedelta
+import os
 from pathlib import Path
 
 import dj_database_url
@@ -16,7 +17,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'cloudinary_storage',
     'django.contrib.staticfiles',
+    'cloudinary',
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
@@ -27,11 +30,6 @@ INSTALLED_APPS = [
 
 if config('USE_S3', default=False, cast=bool):
     INSTALLED_APPS.append('storages')
-
-USE_CLOUDINARY = config('USE_CLOUDINARY', default=False, cast=bool)
-if USE_CLOUDINARY:
-    INSTALLED_APPS.append('cloudinary')
-    INSTALLED_APPS.append('cloudinary_storage')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -91,7 +89,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+# MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -111,14 +109,12 @@ if USE_S3:
     MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/'
 
 # ─── Cloudinary Storage ───────────────────────────────────────────────────────
-if USE_CLOUDINARY:
-    import cloudinary
-    cloudinary.config(
-        cloud_name=config('CLOUDINARY_CLOUD_NAME'),
-        api_key=config('CLOUDINARY_API_KEY'),
-        api_secret=config('CLOUDINARY_API_SECRET'),
-    )
-    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
+}
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # ─── REST Framework ───────────────────────────────────────────────────────────
 REST_FRAMEWORK = {
