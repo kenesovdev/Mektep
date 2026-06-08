@@ -4,11 +4,16 @@ from cloudinary_storage.storage import RawMediaCloudinaryStorage, MediaCloudinar
 
 class PublicRawStorage(RawMediaCloudinaryStorage):
     def _save(self, name, content):
-        name = self.get_available_name(name)
+        # Используем _get_target_name чтобы сохранить правильный префикс пути
+        if hasattr(self, '_get_target_name'):
+            target_name = self._get_target_name(name)
+        else:
+            target_name = name
+
         content.seek(0)
         response = cloudinary.uploader.upload(
             content,
-            public_id=name,
+            public_id=target_name,
             resource_type='raw',
             access_mode='public',
             type='upload',
@@ -18,11 +23,15 @@ class PublicRawStorage(RawMediaCloudinaryStorage):
 
 class PublicMediaStorage(MediaCloudinaryStorage):
     def _save(self, name, content):
-        name = self.get_available_name(name)
+        if hasattr(self, '_get_target_name'):
+            target_name = self._get_target_name(name)
+        else:
+            target_name = name
+
         content.seek(0)
         response = cloudinary.uploader.upload(
             content,
-            public_id=name,
+            public_id=target_name,
             resource_type='image',
             access_mode='public',
             type='upload',
