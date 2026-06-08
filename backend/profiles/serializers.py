@@ -1,6 +1,4 @@
 import os
-import cloudinary.utils
-
 from rest_framework import serializers
 
 from profiles.achievement_serializers import (
@@ -43,7 +41,12 @@ class DiplomaFileField(serializers.FileField):
     def to_representation(self, value):
         if not value:
             return None
-        return value.url
+        from django.conf import settings
+        name = value.name if hasattr(value, 'name') else str(value)
+        return (
+            f"{settings.SUPABASE_URL}/storage/v1/object/public"
+            f"/{settings.SUPABASE_BUCKET}/{name}"
+        )
 
 class DiplomaSerializer(serializers.ModelSerializer):
     file = DiplomaFileField()
