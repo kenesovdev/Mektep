@@ -2,7 +2,7 @@ import io
 import os
 import zipfile
 
-from django.http import FileResponse, StreamingHttpResponse
+from django.http import FileResponse, HttpResponseRedirect, StreamingHttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, generics, status
 from rest_framework.exceptions import PermissionDenied
@@ -95,18 +95,7 @@ class TeacherFileDownloadView(APIView):
         if not obj.file:
             return Response({'error': 'No file attached'}, status=status.HTTP_404_NOT_FOUND)
 
-        try:
-            if not obj.file.storage.exists(obj.file.name):
-                return Response({'error': 'File not found on server'}, status=status.HTTP_404_NOT_FOUND)
-
-            response = FileResponse(
-                obj.file.open('rb'),
-                as_attachment=True,
-                filename=os.path.basename(obj.file.name),
-            )
-            return response
-        except Exception as e:
-            return Response({'error': f'Error accessing file: {str(e)}'}, status=status.HTTP_404_NOT_FOUND)
+        return HttpResponseRedirect(obj.file.url)
 
 
 class SchoolZipExportView(APIView):
