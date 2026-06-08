@@ -2,8 +2,7 @@ import io
 import os
 import zipfile
 
-import cloudinary.utils
-
+from django.conf import settings
 from django.http import FileResponse, HttpResponseRedirect, StreamingHttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, generics, status
@@ -99,7 +98,7 @@ class TeacherFileDownloadView(APIView):
 
         if file_type == 'diploma':
             public_id = obj.file.name.removeprefix('media/')
-            url = cloudinary.utils.cloudinary_url(public_id, resource_type='raw')[0]
+            url = f"{settings.SUPABASE_URL}/storage/v1/object/public/{settings.SUPABASE_BUCKET}/{public_id}"
             return HttpResponseRedirect(url)
 
         return HttpResponseRedirect(obj.file.url)
