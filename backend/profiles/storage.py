@@ -22,9 +22,9 @@ class PublicRawStorage(RawMediaCloudinaryStorage):
             resource_type='raw',
             access_mode='public',
             type='upload',
-            access_control=[{"access_type": "anonymous"}],
         )
-        return response['public_id']
+        stored_name = f"{folder}/{public_id}" if folder else public_id
+        return stored_name
 
 
 class PublicMediaStorage(MediaCloudinaryStorage):
@@ -45,6 +45,6 @@ class PublicMediaStorage(MediaCloudinaryStorage):
             resource_type='image',
             access_mode='public',
             type='upload',
-            access_control=[{"access_type": "anonymous"}],
         )
-        return response['public_id']
+        stored_name = f"{folder}/{public_id}" if folder else public_id
+        return stored_name
