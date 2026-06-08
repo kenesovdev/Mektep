@@ -43,9 +43,7 @@ class DiplomaFileField(serializers.FileField):
     def to_representation(self, value):
         if not value:
             return None
-        public_id = value.name.removeprefix('media/')
-        url = cloudinary.utils.cloudinary_url(public_id, resource_type='raw')[0]
-        return url
+        return value.url
 
 class DiplomaSerializer(serializers.ModelSerializer):
     file = DiplomaFileField()

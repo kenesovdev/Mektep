@@ -1,50 +1,39 @@
 import os
-import cloudinary.uploader
-from cloudinary_storage.storage import RawMediaCloudinaryStorage, MediaCloudinaryStorage
+from django.core.files.storage import Storage
+from django.utils.deconstruct import deconstructible
+from supabase import create_client
+from django.conf import settings
 
-
-class PublicRawStorage(RawMediaCloudinaryStorage):
-    def _save(self, name, content):
-        # Используем _get_target_name чтобы сохранить правильный префикс пути
-        if hasattr(self, '_get_target_name'):
-            target_name = self._get_target_name(name)
-        else:
-            target_name = name
-
-        folder = os.path.dirname(target_name)
-        public_id = os.path.basename(target_name)
-
-        content.seek(0)
-        response = cloudinary.uploader.upload(
-            content,
-            public_id=public_id,
-            folder=folder,
-            resource_type='raw',
-            access_mode='public',
-            type='upload',
+@deconstructible
+class SupabaseStorage(Storage):
+    def __init__(self):
+        self.client = create_client(
+            settings.SUPABASE_URL,
+            settings.SUPABASE_KEY
         )
-        stored_name = f"{folder}/{public_id}" if folder else public_id
-        return stored_name
+        self.bucket = settings.SUPABASE_BUCKET
 
-
-class PublicMediaStorage(MediaCloudinaryStorage):
     def _save(self, name, content):
-        if hasattr(self, '_get_target_name'):
-            target_name = self._get_target_name(name)
-        else:
-            target_name = name
-
-        folder = os.path.dirname(target_name)
-        public_id = os.path.basename(target_name)
-
         content.seek(0)
-        response = cloudinary.uploader.upload(
-            content,
-            public_id=public_id,
-            folder=folder,
-            resource_type='image',
-            access_mode='public',
-            type='upload',
+        self.client.storage.from_(self.bucket).upload(
+            name,
+            content.read(),
+            {"content-type": "application/octet-stream",
+             "x-upsert": "true"}
         )
-        stored_name = f"{folder}/{public_id}" if folder else public_id
-        return stored_name
+        return name
+
+    def url(self, name):
+        return (
+            f"{settings.SUPABASE_URL}/storage/v1/object/public"
+            f"/{self.bucket}/{name}"
+        )
+
+    def exists(self, name):
+        return False
+
+    def delete(self, name):
+        self.client.storage.from_(self.bucket).remove([name])
+
+PublicRawStorage = SupabaseStorage
+PublicMediaStorage = SupabaseStorage
