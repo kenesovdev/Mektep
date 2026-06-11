@@ -29,10 +29,21 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    # ─── FIX: было --workers 3 → теперь 1 воркер + 4 потока ──────────────────
+    # 3 воркера × ~150MB RAM = 450MB+ → OOM на Render Free (лимит 512MB)
+    # 1 воркер + 4 потока = ~180MB total, при этом 4 параллельных запроса
+    # --max-requests 500 перезапускает воркер каждые 500 запросов
+    # (защита от медленных утечек памяти)
     command: >
       sh -c "python manage.py migrate &&
              python manage.py collectstatic --noinput &&
-             gunicorn teacher_portfolio.wsgi:application --bind 0.0.0.0:8000 --workers 3"
+             gunicorn teacher_portfolio.wsgi:application
+               --bind 0.0.0.0:8000
+               --workers 1
+               --threads 4
+               --timeout 120
+               --max-requests 500
+               --max-requests-jitter 50"
 
   frontend:
     build:
@@ -58,7 +69,6 @@ services:
       - frontend_build:/usr/share/nginx/html/:ro
     depends_on:
       - backend
-      - frontend
 
 volumes:
   postgres_data:

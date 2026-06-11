@@ -88,12 +88,16 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
-# MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024
-FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024
+# ─── FIX: было 10MB → теперь 2MB ─────────────────────────────────────────────
+# Django держит файлы до этого размера прямо в RAM (как BytesIO).
+# Файлы БОЛЬШЕ этого лимита Django автоматически пишет во временный файл на диск.
+# Было 10MB → при загрузке файла Django держал до 10MB в оперативке.
+# Стало 2MB → файлы >2MB пишутся на диск, НЕ в RAM. Это важно для Render Free.
+DATA_UPLOAD_MAX_MEMORY_SIZE = 2 * 1024 * 1024   # 2MB (было 10MB)
+FILE_UPLOAD_MAX_MEMORY_SIZE = 2 * 1024 * 1024   # 2MB (было 10MB)
 
 # ─── S3 Storage ───────────────────────────────────────────────────────────────
 USE_S3 = config('USE_S3', default=False, cast=bool)
