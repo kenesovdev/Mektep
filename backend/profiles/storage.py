@@ -3,12 +3,7 @@ from django.core.files.storage import Storage
 from django.utils.deconstruct import deconstructible
 from supabase import create_client
 
-# ─── FIX: Singleton клиент ────────────────────────────────────────────────────
-# Было: SupabaseStorage.__init__() создавал новый create_client() при КАЖДОМ
-# инстанцировании хранилища. Это происходит каждый раз, когда сериализатор
-# обращается к полю FileField. Каждый клиент держит HTTP-сессию в памяти.
-#
-# Стало: один глобальный клиент на весь процесс (создаётся при первом обращении).
+# ─── Singleton клиент ─────────────────────────────────────────────────────────
 _supabase_client = None
 
 
@@ -25,34 +20,43 @@ def _get_client():
 @deconstructible
 class SupabaseStorage(Storage):
     def __init__(self):
-        self.bucket = settings.SUPABASE_BUCKET
+        self.bucket = settings.SUPABASE_BUCKET  # 'media'
 
     @property
     def client(self):
         return _get_client()
 
     def _save(self, name, content):
-        # ─── FIX: content.read() всё ещё нужен (Supabase SDK не поддерживает стриминг),
-        # НО теперь это безопасно потому что:
-        # 1. FILE_UPLOAD_MAX_MEMORY_SIZE снижен до 2MB в settings.py
-        # 2. Файлы >2MB Django пишет на диск как temp-файл, НЕ держит в RAM
-        # 3. content.read() читает с диска, а не из оперативки
+        # ─── FIX: убираем 'media/' в начале если upload_to его содержал ────────
+        # Было: name = 'media/certificates/file.jpg'
+        #        → загружалось в бакет по пути 'media/certificates/file.jpg'
+        #        → URL = .../public/media/media/certificates/file.jpg  💥
+        # Стало: clean_name = 'certificates/file.jpg'
+        #        → загружается в бакет по пути 'certificates/file.jpg'
+        #        → URL = .../public/media/certificates/file.jpg  ✅
+        clean_name = name.removeprefix(f'{self.bucket}/')
         content.seek(0)
         data = content.read()
         self.client.storage.from_(self.bucket).upload(
-            name,
+            clean_name,
             data,
             {
                 'content-type': 'application/octet-stream',
                 'x-upsert': 'true',
             },
         )
-        return name
+        # Возвращаем чистое имя — Django сохранит его в БД без лишнего 'media/'
+        return clean_name
 
     def url(self, name):
+        # ─── FIX: убираем 'media/' в начале если в БД хранится старый путь ─────
+        # Старые записи в БД: name = 'media/certificates/file.jpg'
+        # Новые записи в БД:  name = 'certificates/file.jpg'
+        # В обоих случаях URL будет правильным.
+        clean_name = name.removeprefix(f'{self.bucket}/')
         return (
             f'{settings.SUPABASE_URL}/storage/v1/object/public'
-            f'/{self.bucket}/{name}'
+            f'/{self.bucket}/{clean_name}'
         )
 
     def exists(self, name):
@@ -60,9 +64,9 @@ class SupabaseStorage(Storage):
 
     def delete(self, name):
         try:
-            self.client.storage.from_(self.bucket).remove([name])
+            clean_name = name.removeprefix(f'{self.bucket}/')
+            self.client.storage.from_(self.bucket).remove([clean_name])
         except Exception:
-            # Не падаем если файл уже удалён или не существует
             pass
 
 
