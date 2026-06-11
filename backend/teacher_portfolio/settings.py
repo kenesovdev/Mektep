@@ -111,10 +111,12 @@ if USE_S3:
     AWS_S3_FILE_OVERWRITE = False
     MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/'
 
-# ─── Supabase Storage ───────────────────────────────────────────────────────────
+# ─── Supabase Storage ────────────────────────────────────────────────────────
 SUPABASE_URL = os.environ.get('SUPABASE_URL')
 SUPABASE_KEY = os.environ.get('SUPABASE_KEY')
 SUPABASE_BUCKET = os.environ.get('SUPABASE_BUCKET', 'media')
+
+DEFAULT_FILE_STORAGE = 'teacher_portfolio.storage.SupabaseStorage'  # ← вот это
 
 # ─── REST Framework ───────────────────────────────────────────────────────────
 REST_FRAMEWORK = {
