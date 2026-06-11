@@ -3,8 +3,8 @@ import os
 import zipfile
 
 from django.conf import settings
-from django.http import FileResponse, HttpResponseRedirect, StreamingHttpResponse
 from django.shortcuts import get_object_or_404
+from django.http import StreamingHttpResponse
 from rest_framework import filters, generics, status
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
@@ -96,12 +96,20 @@ class TeacherFileDownloadView(APIView):
         if not obj.file:
             return Response({'error': 'No file attached'}, status=status.HTTP_404_NOT_FOUND)
 
-        if file_type == 'diploma':
-            public_id = obj.file.name.removeprefix('media/')
-            url = f"{settings.SUPABASE_URL}/storage/v1/object/public/{settings.SUPABASE_BUCKET}/{public_id}"
-            return HttpResponseRedirect(url)
+        # ─── FIX: было HttpResponseRedirect → теперь возвращаем URL как JSON ────
+        #
+        # ПРОБЛЕМА была такая:
+        # 1. Фронтенд делает api.get(djangoUrl) — axios добавляет Authorization: Bearer <JWT>
+        # 2. Django отвечал redirect 302 на Supabase URL
+        # 3. Axios АВТОМАТИЧЕСКИ следовал редиректу И отправлял тот же JWT на Supabase
+        # 4. Supabase не знает про Django JWT → возвращал 400
+        #
+        # РЕШЕНИЕ: Django возвращает JSON {"url": "..."}, фронтенд сам
+        # делает plain fetch() (без auth-заголовков) напрямую на Supabase.
+        # Это правильно, т.к. бакет публичный — авторизация не нужна.
 
-        return HttpResponseRedirect(obj.file.url)
+        file_url = obj.file.url  # SupabaseStorage.url() → публичный Supabase URL
+        return Response({'url': file_url})
 
 
 class SchoolZipExportView(APIView):
